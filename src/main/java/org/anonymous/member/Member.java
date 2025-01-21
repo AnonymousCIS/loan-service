@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Member implements UserDetails {
-
+    // 테스트
     private Long seq;
     private String email;
     private String name;
