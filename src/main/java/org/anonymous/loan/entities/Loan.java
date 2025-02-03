@@ -27,7 +27,7 @@ public class Loan {
     private long limit;
 
     // 은행 종류
-    private String bankName;
+    private BankName bankName;
 
     // 카테고리
     private int category;

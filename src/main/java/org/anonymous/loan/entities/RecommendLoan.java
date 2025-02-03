@@ -1,8 +1,6 @@
 package org.anonymous.loan.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.anonymous.global.entities.BaseEntity;
 
@@ -19,4 +17,7 @@ public class RecommendLoan extends BaseEntity {
     private Long seq;
 
     private String email;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Loan loan;
 }

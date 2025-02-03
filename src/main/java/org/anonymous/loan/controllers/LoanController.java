@@ -1,7 +1,10 @@
 package org.anonymous.loan.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
+import org.anonymous.loan.entities.RecommendLoan;
+import org.anonymous.loan.services.recommend.RecommendLoanInfoService;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -12,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class LoanController {
 
+    private final Utils utils;
+
+    private final RecommendLoanInfoService recommendInfoService;
+
     /**
      * 추천 대출 단일 조회
      *
@@ -21,7 +28,9 @@ public class LoanController {
     @GetMapping("/recommend/view/{seq}")
     public JSONData recommendView(@PathVariable("seq") Long seq) {
 
-        return new JSONData();
+        RecommendLoan data = recommendInfoService.get(seq);
+
+        return new JSONData(data);
     }
 
     /**
@@ -78,7 +87,7 @@ public class LoanController {
      * @return
      */
     @GetMapping("/user/list")
-    public JSONData userList(@ModelAttribute UserLoanSearch search) {
+    public JSONData userList(@ModelAttribute RecommendLoanSearch search) {
 
         return new JSONData();
     }

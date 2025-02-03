@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
+import org.anonymous.loan.services.recommend.RecommendLoanDeleteService;
 import org.anonymous.loan.validators.LoanValidator;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,8 @@ public class AdminLoanController {
     private final Utils utils;
 
     private final LoanValidator validator;
+
+    private final RecommendLoanDeleteService recommendDeleteService;
 
     /**
      * 추천 대출 로그 단일 | 목록 일괄 삭제 처리
