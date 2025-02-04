@@ -1,9 +1,8 @@
 package org.anonymous.loan.constants;
 
-
 import lombok.Getter;
 
-@Getter // 이것도 다시 짜자.
+@Getter
 public enum Category {
     CREDITLOAN(1,"신용대출"), // 신용대출
     MORTGAGELOAN(2, "담보대출"); // 담보대출

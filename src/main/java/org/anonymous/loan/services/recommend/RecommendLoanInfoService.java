@@ -61,7 +61,7 @@ public class RecommendLoanInfoService {
      * @param search
      * @return
      */
-    public List<RecommendLoan> getList(RecommendLoanSearch search) {
+    public ListData<RecommendLoan> getList(RecommendLoanSearch search) {
 
         int page = Math.max(search.getPage(), 1);
 
@@ -75,6 +75,8 @@ public class RecommendLoanInfoService {
         BooleanBuilder andBuilder = new BooleanBuilder();
 
         QRecommendLoan recommendLoan = QRecommendLoan.recommendLoan;
+
+        QLoan loan = QLoan.loan;
 
         // 대출 이름별 검색
         List<String> loanNames = search.getLoanName();
@@ -95,6 +97,11 @@ public class RecommendLoanInfoService {
         // 카테고리별 검색
         List<Category> categories = search.getCategories();
 
+        if (categories != null && !categories.isEmpty()) {
+
+            andBuilder.and(recommendLoan.loan.category.in(categories));
+        }
+
         /**
          * 키워드 검색
          *
@@ -108,86 +115,87 @@ public class RecommendLoanInfoService {
 
         sopt = StringUtils.hasText(sopt) ? sopt : "ALL";
 
-//        if (StringUtils.hasText(skey)) {
-//
-//            skey = skey.trim();
-//
-//            StringExpression accountNumber = bank.accountNumber;
-//            StringExpression depositor = bank.name.concat(bank.createdBy);
-//
-//            StringExpression condition = null;
-//
-//            if (sopt.equals("ACCOUNTNUMBER")) { // 계좌 번호 검색
-//
-//                condition = accountNumber;
-//
-//            } else if (sopt.equals("DEPOSITOR")) { // 예금주 검색
-//
-//                condition = depositor;
-//
-//            } else { // 통합 검색
-//
-//                condition = accountNumber.concat(depositor);
-//            }
-//
-//            andBuilder.and(condition.contains(skey));
-//        }
-//
-//        // 회원 이메일로 검색
-//        // OneToMany 안쓰는 이유 : Page 때문.. 생각보다 OneToMany 는 자주 쓰이지 않음
-//        List<String> emails = search.getEmail();
-//
-//        if (emails != null && !emails.isEmpty()) {
-//
-//            andBuilder.and(bank.createdBy.in(emails));
-//        }
-//        /* 검색 처리 E */
-//
-//        JPAQuery<Bank> query = queryFactory.selectFrom(bank)
-//                .leftJoin(bank.transactions, transaction)
-//                .fetchJoin()
-//                .where(andBuilder)
-//                .offset(offset)
-//                .limit(limit);
-//
-//        /* 정렬 조건 처리 S */
-//        String sort = search.getSort();
-//
-//        if (StringUtils.hasText(sort)) {
-//
-//            // 0번째 : 필드명, 1번째 : 정렬 방향
-//            String[] _sort = sort.split("_");
-//
-//            String field = _sort[0];
-//
-//            String direction = _sort[1];
-//
-//            if (field.equals("balance")) { // 계좌 잔액순 정렬
-//
-//                query.orderBy(direction.equalsIgnoreCase("DESC")
-//                        ? bank.balance.desc() : bank.balance.asc());
-//
-//            } else { // 기본 정렬 조건 - 최신순
-//
-//                query.orderBy(bank.createdAt.desc());
-//            }
-//        } else { // 기본 정렬 조건 - 최신순
-//
-//            query.orderBy(bank.createdAt.desc());
-//        }
-//        /* 정렬 조건 처리 E */
-//
-//        List<Bank> items = query.fetch();
-//
-//        long total = repository.count(andBuilder);
-//
-//        int ranges = utils.isMobile() ? 5 : 10;
-//
-//        Pagination pagination = new Pagination(page, (int)total, ranges, limit, request);
-//
-//        return new ListData<>(items, pagination);
+        if (StringUtils.hasText(skey)) {
 
-        return null;
+            skey = skey.trim();
+
+            StringExpression loanname = recommendLoan.loan.loanName;
+            StringExpression email = recommendLoan.email;
+
+            StringExpression condition = null;
+
+            if (sopt.equals("LOANNAME")) { // 대출 이름 검색
+
+                condition = loanname;
+
+            } else { // 통합 검색
+
+                condition = loanname.concat(email);
+            }
+
+            andBuilder.and(condition.contains(skey));
+        }
+
+        // 회원 이메일로 검색
+        // OneToMany 안쓰는 이유 : Page 때문.. 생각보다 OneToMany 는 자주 쓰이지 않음
+        List<String> emails = search.getEmail();
+
+        if (emails != null && !emails.isEmpty()) {
+
+            andBuilder.and(recommendLoan.email.in(emails));
+        }
+
+        /*
+        if (search instanceof  RecommendLoanSearch recommendLoanSearch) {
+            List<String> emails = recommendLoanSearch.getEmail();
+        }
+         */
+
+        /* 검색 처리 E */
+
+        JPAQuery<RecommendLoan> query = queryFactory.selectFrom(recommendLoan)
+                .leftJoin(recommendLoan.loan, loan)
+                .fetchJoin()
+                .where(andBuilder)
+                .offset(offset)
+                .limit(limit);
+
+        /* 정렬 조건 처리 S */
+        String sort = search.getSort();
+
+        if (StringUtils.hasText(sort)) {
+
+            // 0번째 : 필드명, 1번째 : 정렬 방향
+            String[] _sort = sort.split("_");
+
+            String field = _sort[0];
+
+            String direction = _sort[1];
+
+            if (field.equals("interestRate")) { // 대출 금리(이자율) 순 정렬
+
+                query.orderBy(direction.equalsIgnoreCase("DESC")
+                        ? recommendLoan.loan.interestRate.desc() : recommendLoan.loan.interestRate.asc());
+
+            } else { // 기본 정렬 조건 - 최신순
+
+                query.orderBy(recommendLoan.createdAt.desc());
+            }
+        } else { // 기본 정렬 조건 - 최신순
+
+            query.orderBy(recommendLoan.createdAt.desc());
+        }
+        /* 정렬 조건 처리 E */
+
+        List<RecommendLoan> items = query.fetch();
+
+        long total = repository.count(andBuilder);
+
+        int ranges = utils.isMobile() ? 5 : 10;
+
+        Pagination pagination = new Pagination(page, (int)total, ranges, limit, request);
+
+        return new ListData<>(items, pagination);
     }
 
     /**
@@ -208,7 +216,6 @@ public class RecommendLoanInfoService {
 
         search.setEmail(List.of(email));
 
-//        return getList(search);
-        return null;
+        return getList(search);
     }
 }

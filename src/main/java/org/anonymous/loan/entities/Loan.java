@@ -2,7 +2,6 @@ package org.anonymous.loan.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.anonymous.global.entities.BaseEntity;
 import org.anonymous.loan.constants.BankName;
 import org.anonymous.loan.constants.Category;
 import org.anonymous.loan.constants.LoanType;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-public class Loan extends BaseEntity {
+public class Loan {
 
     @Id
     @GeneratedValue
@@ -25,12 +24,16 @@ public class Loan extends BaseEntity {
     private String loanName;
 
     // 대출 한도
-    private Long limit; // 특성1
+    private long limit;
 
     // 은행 종류
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
     private BankName bankName; // 특성2
 
     // 대출 종류
+    @Enumerated(EnumType.STRING)
+    @Column(length=30)
     private Category category; // 특성3
 
     // 대출 금리 (이자율)
@@ -57,4 +60,5 @@ public class Loan extends BaseEntity {
     private Long item4_interestRate; // 이자율 특성4
 
     private Long item5_repaymentDate; // 상환날짜 특성5
+
 }

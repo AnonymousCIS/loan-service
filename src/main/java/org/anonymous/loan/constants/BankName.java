@@ -2,8 +2,6 @@ package org.anonymous.loan.constants;
 
 import lombok.Getter;
 
-import java.util.Arrays;
-
 @Getter
 public enum BankName {
     HANKUK(0, "한국은행"), // 한국은행 0
