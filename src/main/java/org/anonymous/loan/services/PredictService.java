@@ -36,7 +36,7 @@ public class PredictService {
     private final LoanInfoService loanInfoService;
     private final MemberUtil memberUtil;
 
-    public List<Long> predict(List<Integer> items) {
+    public List<Loan> predict(List<Integer> items) {
         try {
             String data = om.writeValueAsString(items);
 
@@ -54,16 +54,21 @@ public class PredictService {
             }
 
             List<Long> results = om.readValue(in.readAllBytes(), new TypeReference<>() {});
-//            List<Loan> recommendLoans = new ArrayList<>();
-//            for (Long result : results) {
-//                RecommendLoan recommendLoan = new RecommendLoan();
-//                recommendLoan.setEmail(memberUtil.getMember().getEmail());
-//                RecommendLoan loan = loanInfoService.get(result);
-//                recommendLoan.setLoan(loan);
-//                recommendLoans.add(recommendLoan);
-//            }
-//            recommendCardRepository.saveAllAndFlush(recommendLoans);
-            return results;
+            List<Loan> loans = new ArrayList<>();
+            List<RecommendLoan> recommendLoans = new ArrayList<>();
+            for (Long result : results) {
+                RecommendLoan recommendLoan = new RecommendLoan();
+                recommendLoan.setEmail(memberUtil.getMember().getEmail());
+                Loan loan = loanInfoService.get(result);
+                if (!loan.isOpen()) {
+                    continue;
+                }
+                recommendLoan.setLoan(loan);
+                loans.add(loan);
+                recommendLoans.add(recommendLoan);
+            }
+            recommendCardRepository.saveAllAndFlush(recommendLoans);
+            return loans;
 
         } catch (Exception e) {
             e.printStackTrace();

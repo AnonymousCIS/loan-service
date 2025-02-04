@@ -1,6 +1,7 @@
 package org.anonymous.loan.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.anonymous.global.rests.JSONData;
 import org.anonymous.loan.entities.Loan;
 import org.anonymous.loan.services.PredictService;
 import org.anonymous.loan.services.TrainService;
@@ -28,9 +29,10 @@ public class TrainController {
 
 
     @GetMapping("/predict")
-    public List<Long> predict(@RequestParam("data") String data) {
+    public JSONData predict(@RequestParam("data") String data) {
         List<Integer> items = Arrays.stream(data.split("_")).map(Integer::valueOf).toList();
         System.out.println("items:" + items);
-        return predictService.predict(items);
+        List<Loan> loans = predictService.predict(items);
+        return new JSONData(loans);
     }
 }
