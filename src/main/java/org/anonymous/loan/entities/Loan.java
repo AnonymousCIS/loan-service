@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.anonymous.loan.constants.BankName;
 import org.anonymous.loan.constants.Category;
-import org.anonymous.loan.constants.LoanType;
 
 import java.time.LocalDateTime;
 
@@ -24,41 +23,41 @@ public class Loan {
     private String loanName;
 
     // 대출 한도
-    private long limit;
+    private Long limit; // 특성1
 
     // 은행 종류
-    private BankName bankName;
-
-    // 카테고리
-    private int category;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private BankName bankName; // 특성2
 
     // 대출 종류
-    private int loanType;
+    @Enumerated(EnumType.STRING)
+    @Column(length=30)
+    private Category category; // 특성3
+
+    // 대출 금리 (이자율)
+    private Double interestRate; // 특성4
 
     // 대출 설명
     @Lob
     private String loanDescription;
 
-    // 대출 금리 (이자율)
-    private long interestRate;
-
     // 대출 상환일
     private LocalDateTime repaymentDate;
-
-    // 대출 종류
-    @Transient
-    private LoanType _loanType;
-
-    // 은행 종류
-    @Transient
-    private BankName _bankName;
-
-    // 카테고리
-    @Transient
-    private Category _category;
 
     // 일반 유저에게 공개 여부
     private boolean isOpen;
 
     private boolean done;
+
+    private Long item1_limit; // 대출한도 특성1
+
+    private int item2_BankName; // 대출한은행이름 특성2
+
+    private int item3_category; // 대출특성 특성3
+
+    private Long item4_interestRate; // 이자율 특성4
+
+    private Long item5_repaymentDate; // 상환날짜 특성5
+
 }

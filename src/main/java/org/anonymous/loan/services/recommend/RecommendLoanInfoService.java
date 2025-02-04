@@ -12,6 +12,7 @@ import org.anonymous.global.paging.Pagination;
 import org.anonymous.loan.constants.BankName;
 import org.anonymous.loan.constants.Category;
 import org.anonymous.loan.controllers.RecommendLoanSearch;
+import org.anonymous.loan.entities.QLoan;
 import org.anonymous.loan.entities.QRecommendLoan;
 import org.anonymous.loan.entities.RecommendLoan;
 import org.anonymous.loan.exceptions.RecommendLoanNotFoundException;
@@ -61,7 +62,7 @@ public class RecommendLoanInfoService {
      * @param search
      * @return
      */
-    public List<RecommendLoan> getList(RecommendLoanSearch search) {
+    public ListData<RecommendLoan> getList(RecommendLoanSearch search) {
 
         int page = Math.max(search.getPage(), 1);
 
@@ -75,6 +76,8 @@ public class RecommendLoanInfoService {
         BooleanBuilder andBuilder = new BooleanBuilder();
 
         QRecommendLoan recommendLoan = QRecommendLoan.recommendLoan;
+
+        QLoan loan = QLoan.loan;
 
         // 대출 이름별 검색
         List<String> loanNames = search.getLoanName();
@@ -95,13 +98,17 @@ public class RecommendLoanInfoService {
         // 카테고리별 검색
         List<Category> categories = search.getCategories();
 
+        if (categories != null && !categories.isEmpty()) {
+
+            andBuilder.and(recommendLoan.loan.category.in(categories));
+        }
+
         /**
          * 키워드 검색
          *
          * - sopt
-         * ALL : 은행명 + 계좌 번호 + 예금주(이름 + 이메일)
-         * ACCOUNTNUMBER : 계좌 번호
-         * DEPOSITOR : 예금주(이름 + 이메일)
+         * ALL : 대출 이름 + 이메일
+         * LOANNAME : 대출 이름
          */
         String sopt = search.getSopt();
         String skey = search.getSkey();
@@ -112,22 +119,18 @@ public class RecommendLoanInfoService {
 
             skey = skey.trim();
 
-            StringExpression accountNumber = bank.accountNumber;
-            StringExpression depositor = bank.name.concat(bank.createdBy);
+            StringExpression loanname = recommendLoan.loan.loanName;
+            StringExpression email = recommendLoan.email;
 
             StringExpression condition = null;
 
-            if (sopt.equals("ACCOUNTNUMBER")) { // 계좌 번호 검색
+            if (sopt.equals("LOANNAME")) { // 대출 이름 검색
 
-                condition = accountNumber;
-
-            } else if (sopt.equals("DEPOSITOR")) { // 예금주 검색
-
-                condition = depositor;
+                condition = loanname;
 
             } else { // 통합 검색
 
-                condition = accountNumber.concat(depositor);
+                condition = loanname.concat(email);
             }
 
             andBuilder.and(condition.contains(skey));
@@ -139,12 +142,19 @@ public class RecommendLoanInfoService {
 
         if (emails != null && !emails.isEmpty()) {
 
-            andBuilder.and(bank.createdBy.in(emails));
+            andBuilder.and(recommendLoan.email.in(emails));
         }
+
+        /*
+        if (search instanceof  RecommendLoanSearch recommendLoanSearch) {
+            List<String> emails = recommendLoanSearch.getEmail();
+        }
+         */
+
         /* 검색 처리 E */
 
-        JPAQuery<Bank> query = queryFactory.selectFrom(bank)
-                .leftJoin(bank.transactions, transaction)
+        JPAQuery<RecommendLoan> query = queryFactory.selectFrom(recommendLoan)
+                .leftJoin(recommendLoan.loan, loan)
                 .fetchJoin()
                 .where(andBuilder)
                 .offset(offset)
@@ -162,22 +172,22 @@ public class RecommendLoanInfoService {
 
             String direction = _sort[1];
 
-            if (field.equals("balance")) { // 계좌 잔액순 정렬
+            if (field.equals("interestRate")) { // 대출 금리(이자율) 순 정렬
 
                 query.orderBy(direction.equalsIgnoreCase("DESC")
-                        ? bank.balance.desc() : bank.balance.asc());
+                        ? recommendLoan.loan.interestRate.desc() : recommendLoan.loan.interestRate.asc());
 
             } else { // 기본 정렬 조건 - 최신순
 
-                query.orderBy(bank.createdAt.desc());
+                query.orderBy(recommendLoan.createdAt.desc());
             }
         } else { // 기본 정렬 조건 - 최신순
 
-            query.orderBy(bank.createdAt.desc());
+            query.orderBy(recommendLoan.createdAt.desc());
         }
         /* 정렬 조건 처리 E */
 
-        List<Bank> items = query.fetch();
+        List<RecommendLoan> items = query.fetch();
 
         long total = repository.count(andBuilder);
 

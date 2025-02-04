@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RecommendLoanDeleteService {
 
+    // private final RecommendLoan
+
     /**
      * 추천 대출 단일 삭제
      *
