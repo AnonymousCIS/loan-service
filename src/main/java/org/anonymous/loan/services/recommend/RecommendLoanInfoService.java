@@ -19,7 +19,6 @@ import org.anonymous.loan.exceptions.RecommendLoanNotFoundException;
 import org.anonymous.loan.repositories.RecommendLoanReposotiry;
 import org.anonymous.member.Member;
 import org.anonymous.member.MemberUtil;
-import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,8 +33,6 @@ public class RecommendLoanInfoService {
     private final Utils utils;
 
     private final MemberUtil memberUtil;
-
-    private final ModelMapper modelMapper;
 
     private final HttpServletRequest request;
 
@@ -107,9 +104,8 @@ public class RecommendLoanInfoService {
          * 키워드 검색
          *
          * - sopt
-         * ALL : 은행명 + 계좌 번호 + 예금주(이름 + 이메일)
-         * ACCOUNTNUMBER : 계좌 번호
-         * DEPOSITOR : 예금주(이름 + 이메일)
+         * ALL : 대출 이름
+         * LOANNAME : 대출 이름
          */
         String sopt = search.getSopt();
         String skey = search.getSkey();
@@ -121,7 +117,6 @@ public class RecommendLoanInfoService {
             skey = skey.trim();
 
             StringExpression loanname = recommendLoan.loan.loanName;
-            StringExpression email = recommendLoan.email;
 
             StringExpression condition = null;
 
@@ -131,7 +126,7 @@ public class RecommendLoanInfoService {
 
             } else { // 통합 검색
 
-                condition = loanname.concat(email);
+                condition = loanname;
             }
 
             andBuilder.and(condition.contains(skey));
@@ -178,6 +173,16 @@ public class RecommendLoanInfoService {
                 query.orderBy(direction.equalsIgnoreCase("DESC")
                         ? recommendLoan.loan.interestRate.desc() : recommendLoan.loan.interestRate.asc());
 
+            } else if (field.equals("limit")) { // 대출 한도순 정렬
+
+                query.orderBy(direction.equalsIgnoreCase("DESC")
+                        ? recommendLoan.loan.limit.desc() : recommendLoan.loan.limit.asc());
+
+            } else if (field.equals("repaymentYear")) { // 대출 상환일순 정렬
+
+                query.orderBy(direction.equalsIgnoreCase("DESC")
+                        ? recommendLoan.loan.repaymentYear.desc() : recommendLoan.loan.repaymentYear.asc());
+
             } else { // 기본 정렬 조건 - 최신순
 
                 query.orderBy(recommendLoan.createdAt.desc());
@@ -200,14 +205,14 @@ public class RecommendLoanInfoService {
     }
 
     /**
-     * 현재 로그인한 회원이 추천받은 대축 목록 조회
+     * 현재 로그인한 회원이 추천받은 대출 목록 조회
      *
      * MyPage에서 연동
      *
      * @param search
      * @return
      */
-    public ListData<RecommendLoan> getMeyList(RecommendLoanSearch search) {
+    public ListData<RecommendLoan> getMyList(RecommendLoanSearch search) {
 
         if (!memberUtil.isLogin()) return new ListData<>(List.of(), null);
 

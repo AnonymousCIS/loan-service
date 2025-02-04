@@ -2,9 +2,14 @@ package org.anonymous.loan.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.libs.Utils;
+import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
+import org.anonymous.loan.entities.Loan;
 import org.anonymous.loan.entities.RecommendLoan;
+import org.anonymous.loan.entities.UserLoan;
+import org.anonymous.loan.services.LoanInfoService;
 import org.anonymous.loan.services.recommend.RecommendLoanInfoService;
+import org.anonymous.loan.services.userLoan.UserLoanInfoService;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -16,6 +21,10 @@ import org.springframework.web.bind.annotation.*;
 public class LoanController {
 
     private final Utils utils;
+
+    private final LoanInfoService loanInfoService;
+
+    private final UserLoanInfoService userLoanInfoService;
 
     private final RecommendLoanInfoService recommendInfoService;
 
@@ -39,9 +48,11 @@ public class LoanController {
      * @return
      */
     @GetMapping("/recommend/list")
-    public JSONData recommendList() {
+    public JSONData recommendList(@ModelAttribute RecommendLoanSearch search) {
 
-        return new JSONData();
+        ListData<RecommendLoan> data = recommendInfoService.getList(search);
+
+        return new JSONData(data);
     }
 
     /**
@@ -53,7 +64,9 @@ public class LoanController {
     @GetMapping("/view/{seq}")
     public JSONData view(@PathVariable("seq") Long seq) {
 
-        return new JSONData();
+        Loan data = loanInfoService.get(seq);
+
+        return new JSONData(data);
     }
 
     /**
@@ -65,7 +78,9 @@ public class LoanController {
     @GetMapping("/list")
     public JSONData list(@ModelAttribute LoanSearch search) {
 
-        return new JSONData();
+        ListData<Loan> data = loanInfoService.getList(search);
+
+        return new JSONData(data);
     }
 
     /**
@@ -77,7 +92,9 @@ public class LoanController {
     @GetMapping("/user/view/{seq}")
     public JSONData userView(@PathVariable("seq") Long seq) {
 
-        return new JSONData();
+        UserLoan data = userLoanInfoService.get(seq);
+
+        return new JSONData(data);
     }
 
     /**
@@ -89,7 +106,9 @@ public class LoanController {
     @GetMapping("/user/list")
     public JSONData userList(@ModelAttribute RecommendLoanSearch search) {
 
-        return new JSONData();
+        ListData<UserLoan> data = userLoanInfoService.getList(search);
+
+        return new JSONData(data);
     }
 
     /**

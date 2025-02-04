@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.anonymous.global.entities.BaseMemberEntity;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 public class UserLoan extends BaseMemberEntity {
@@ -16,4 +18,6 @@ public class UserLoan extends BaseMemberEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Loan loan;
+
+    private LocalDateTime repaymentDate;
 }

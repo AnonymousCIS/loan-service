@@ -2,11 +2,9 @@ package org.anonymous.loan.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.anonymous.global.entities.BaseEntity;
 import org.anonymous.loan.constants.BankName;
 import org.anonymous.loan.constants.Category;
-import org.anonymous.loan.constants.LoanType;
-
-import java.time.LocalDateTime;
 
 /**
  * 대출 상품
@@ -14,7 +12,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-public class Loan {
+public class Loan extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -44,7 +42,7 @@ public class Loan {
     private String loanDescription;
 
     // 대출 상환일
-    private LocalDateTime repaymentDate;
+    private Long repaymentYear;
 
     // 일반 유저에게 공개 여부
     private boolean isOpen;

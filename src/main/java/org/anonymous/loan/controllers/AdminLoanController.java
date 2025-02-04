@@ -5,6 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
+import org.anonymous.loan.entities.Loan;
+import org.anonymous.loan.entities.RecommendLoan;
+import org.anonymous.loan.services.LoanDeleteService;
+import org.anonymous.loan.services.LoanUpdateService;
 import org.anonymous.loan.services.recommend.RecommendLoanDeleteService;
 import org.anonymous.loan.validators.LoanValidator;
 import org.springframework.validation.Errors;
@@ -21,16 +25,24 @@ public class AdminLoanController {
 
     private final LoanValidator validator;
 
+    private final LoanUpdateService loanUpdateService;
+
+    private final LoanDeleteService loanDeleteService;
+
     private final RecommendLoanDeleteService recommendDeleteService;
 
     /**
      * 추천 대출 로그 단일 | 목록 일괄 삭제 처리
+     *
+     * @param seqs
      * @return
      */
     @DeleteMapping("/recommend/deletes")
-    public JSONData recommendDeletes() {
+    public JSONData recommendDeletes(@RequestParam("seq") List<Long> seqs) {
 
-        return new JSONData();
+        List<RecommendLoan> data = recommendDeleteService.deletes(seqs);
+
+        return new JSONData(data);
     }
 
     /**
@@ -43,26 +55,32 @@ public class AdminLoanController {
     @PostMapping("/create")
     public JSONData createLoans(@RequestBody @Valid RequestLoan form, Errors errors) {
 
+        validator.validate(form, errors);
+
         if (errors.hasErrors()) throw new BadRequestException(utils.getErrorMessages(errors));
 
-        return new JSONData();
+        Loan data = loanUpdateService.process(form);
+
+        return new JSONData(data);
     }
 
     /**
      * 대출 단일 | 일괄 수정 처리
      *
-     * @param form
+     * @param forms
      * @param errors
      * @return
      */
     @PatchMapping("/updates")
-    public JSONData update(@RequestBody @Valid List<RequestLoan> form, Errors errors) {
+    public JSONData update(@RequestBody @Valid List<RequestLoan> forms, Errors errors) {
+
+        validator.validate(forms, errors);
 
         if (errors.hasErrors()) throw new BadRequestException(utils.getErrorMessages(errors));
 
-        validator.validate(form, errors);
+        List<Loan> data = loanUpdateService.process(forms);
 
-        return new JSONData();
+        return new JSONData(data);
     }
 
     /**
@@ -74,11 +92,14 @@ public class AdminLoanController {
     @DeleteMapping("/deletes")
     public JSONData loanDeletes(@RequestParam("seq") List<Long> seqs) {
 
-        return new JSONData();
+        List<Loan> data = loanDeleteService.deletes(seqs);
+
+        return new JSONData(data);
     }
 
     /**
      * 유저 대출 단일 | 목록 일괄 삭제
+     *
      * @param seqs
      * @return
      */
