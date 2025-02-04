@@ -1,11 +1,11 @@
 package org.anonymous.loan.entities;
 
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.Data;
 import org.anonymous.global.entities.BaseMemberEntity;
 
+@Data
+@Entity
 public class UserLoan extends BaseMemberEntity {
 
     @Id
