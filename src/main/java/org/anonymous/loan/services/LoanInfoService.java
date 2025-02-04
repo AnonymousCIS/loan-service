@@ -17,6 +17,7 @@ import org.anonymous.loan.entities.Loan;
 import org.anonymous.loan.entities.QLoan;
 import org.anonymous.loan.exceptions.LoanNotFoundException;
 import org.anonymous.loan.repositories.LoanRepository;
+import org.anonymous.member.MemberUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,8 @@ import java.util.List;
 public class LoanInfoService {
 
     private final Utils utils;
+
+    private final MemberUtil memberUtil;
 
     private final ModelMapper modelMapper;
 
@@ -48,6 +51,8 @@ public class LoanInfoService {
     public Loan get(Long seq) {
 
         Loan loan = loanRepository.findById(seq).orElseThrow(LoanNotFoundException::new);
+
+        if (!memberUtil.isAdmin() && !loan.isOpen()) throw new LoanNotFoundException();
 
         return loan;
     }
@@ -125,6 +130,8 @@ public class LoanInfoService {
 
             andBuilder.and(loan.category.in(categories));
         }
+
+        if (!memberUtil.isAdmin()) andBuilder.and(loan.isOpen);
 
         /**
          * 키워드 검색

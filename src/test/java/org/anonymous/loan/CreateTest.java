@@ -1,4 +1,4 @@
-package org.anonymous.member.test.loan;
+package org.anonymous.loan;
 
 import org.anonymous.loan.services.LoanUpdateService;
 import org.anonymous.loan.services.PredictService;

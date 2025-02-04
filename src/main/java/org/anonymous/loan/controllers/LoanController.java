@@ -9,8 +9,12 @@ import org.anonymous.loan.entities.RecommendLoan;
 import org.anonymous.loan.entities.UserLoan;
 import org.anonymous.loan.services.LoanInfoService;
 import org.anonymous.loan.services.recommend.RecommendLoanInfoService;
+import org.anonymous.loan.services.userLoan.UserLoanDeleteService;
 import org.anonymous.loan.services.userLoan.UserLoanInfoService;
+import org.anonymous.loan.services.userLoan.UserLoanUpdateService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 일반 사용자 & 관리자 공용 기능
@@ -25,6 +29,10 @@ public class LoanController {
     private final LoanInfoService loanInfoService;
 
     private final UserLoanInfoService userLoanInfoService;
+
+    private final UserLoanDeleteService userLoanDeleteService;
+
+    private final UserLoanUpdateService userLoanUpdateService;
 
     private final RecommendLoanInfoService recommendInfoService;
 
@@ -112,17 +120,34 @@ public class LoanController {
     }
 
     /**
+     * 유저 대출 단일 | 목록 일괄 등록 처리
+     *
+     * @param seqs
+     * @return
+     */
+    @PostMapping("/user/create")
+    public JSONData createUserLoan(List<Long> seqs) {
+
+        List<UserLoan> data = userLoanUpdateService.process(seqs);
+
+        return new JSONData(data);
+    }
+
+    /**
      * 유저 대출 삭제
      *
      * 단일 | 목록 일괄 수정
      *
      * DB 삭제 X, 일반 유저 전용 삭제로 deletedAt 현재 시간으로 부여
      *
+     * @param seqs
      * @return
      */
     @PatchMapping("/user/deletes")
-    public JSONData userDeletes() {
+    public JSONData userDeletes(@RequestParam("seq") List<Long> seqs) {
 
-        return new JSONData();
+        List<UserLoan> data = userLoanDeleteService.userDeletes(seqs);
+
+        return new JSONData(data);
     }
 }

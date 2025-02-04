@@ -7,9 +7,11 @@ import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.loan.entities.Loan;
 import org.anonymous.loan.entities.RecommendLoan;
+import org.anonymous.loan.entities.UserLoan;
 import org.anonymous.loan.services.LoanDeleteService;
 import org.anonymous.loan.services.LoanUpdateService;
 import org.anonymous.loan.services.recommend.RecommendLoanDeleteService;
+import org.anonymous.loan.services.userLoan.UserLoanDeleteService;
 import org.anonymous.loan.validators.LoanValidator;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,8 @@ public class AdminLoanController {
     private final LoanUpdateService loanUpdateService;
 
     private final LoanDeleteService loanDeleteService;
+
+    private final UserLoanDeleteService userLoanDeleteService;
 
     private final RecommendLoanDeleteService recommendDeleteService;
 
@@ -106,6 +110,8 @@ public class AdminLoanController {
     @DeleteMapping("/user/deletes")
     public JSONData userLoanDeletes(@RequestParam("seq") List<Long> seqs) {
 
-        return new JSONData();
+        List<UserLoan> data = userLoanDeleteService.deletes(seqs);
+
+        return new JSONData(data);
     }
 }

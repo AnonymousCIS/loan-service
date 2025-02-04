@@ -16,7 +16,7 @@ public class RequestLoan {
     private String loanName;
 
     @NotBlank
-    private long limit;
+    private Long limit;
 
     @NotBlank
     private Category category;

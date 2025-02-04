@@ -199,7 +199,7 @@ public class UserLoanInfoService {
     }
 
     /**
-     * 현재 로그인한 회원이 추천받은 대출 목록 조회
+     * 현재 로그인한 회원의 대출 목록 조회
      *
      * MyPage에서 연동
      *
