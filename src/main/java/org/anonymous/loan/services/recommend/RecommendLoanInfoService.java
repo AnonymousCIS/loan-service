@@ -12,6 +12,7 @@ import org.anonymous.global.paging.Pagination;
 import org.anonymous.loan.constants.BankName;
 import org.anonymous.loan.constants.Category;
 import org.anonymous.loan.controllers.RecommendLoanSearch;
+import org.anonymous.loan.entities.QLoan;
 import org.anonymous.loan.entities.QRecommendLoan;
 import org.anonymous.loan.entities.RecommendLoan;
 import org.anonymous.loan.exceptions.RecommendLoanNotFoundException;
