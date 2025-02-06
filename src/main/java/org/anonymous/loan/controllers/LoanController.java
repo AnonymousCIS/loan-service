@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
@@ -25,6 +26,7 @@ import java.util.List;
  * 일반 사용자 & 관리자 공용 기능
  *
  */
+@Tag(name = "Loan", description = "대출 관리 API")
 @RestController
 @RequiredArgsConstructor
 public class LoanController {
