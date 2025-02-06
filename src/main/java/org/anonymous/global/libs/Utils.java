@@ -2,16 +2,21 @@ package org.anonymous.global.libs;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.global.rests.JSONData;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +32,7 @@ public class Utils {
     private final HttpServletRequest request;
     private final MessageSource messageSource;
     private final DiscoveryClient discoveryClient;
+    private final RestTemplate restTemplate;
 
     /**
      * 메세지 코드로 조회된 문구
@@ -197,5 +203,18 @@ public class Utils {
         }
 
         return headers;
+    }
+
+    public ResponseEntity<JSONData> returnData() {
+        String token = getAuthToken();
+        HttpHeaders headers = new HttpHeaders();
+        if (StringUtils.hasText(token)) {
+            headers.setBearerAuth(token);
+        }
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        String apiUrl = serviceUrl("member-service", "/");
+        return restTemplate.exchange(apiUrl, HttpMethod.GET, request, JSONData.class);
     }
 }

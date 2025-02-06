@@ -1,29 +1,36 @@
 package org.anonymous.loan.services.recommend;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.paging.Pagination;
+import org.anonymous.global.rests.JSONData;
 import org.anonymous.loan.constants.BankName;
 import org.anonymous.loan.constants.Category;
 import org.anonymous.loan.controllers.RecommendLoanSearch;
 import org.anonymous.loan.entities.QLoan;
 import org.anonymous.loan.entities.QRecommendLoan;
 import org.anonymous.loan.entities.RecommendLoan;
+import org.anonymous.loan.exceptions.LoanNotFoundException;
 import org.anonymous.loan.exceptions.RecommendLoanNotFoundException;
 import org.anonymous.loan.repositories.RecommendLoanReposotiry;
 import org.anonymous.member.Member;
 import org.anonymous.member.MemberUtil;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 @Lazy
 @Service
@@ -39,6 +46,7 @@ public class RecommendLoanInfoService {
     private final JPAQueryFactory queryFactory;
 
     private final RecommendLoanReposotiry repository;
+    private final ObjectMapper om;
 
     /**
      * 추천 대출 단일 조회
@@ -49,6 +57,19 @@ public class RecommendLoanInfoService {
     public RecommendLoan get(Long seq) {
 
         RecommendLoan item = repository.findById(seq).orElseThrow(RecommendLoanNotFoundException::new);
+
+        ResponseEntity<JSONData> responseEntity = utils.returnData();
+
+        try {
+            String email = om.writeValueAsString(Objects.requireNonNull(responseEntity.getBody()).getData());
+
+            if (!email.equals(item.getEmail())) {
+                throw new LoanNotFoundException();
+            }
+
+        } catch (JsonProcessingException e) {
+            throw new BadRequestException();
+        }
 
         return item;
     }

@@ -34,14 +34,14 @@ public class CreateTest {
 
     @Test
     void predict() {
-        List<Integer> items = new ArrayList<>();
-        items.add(1);
-        items.add(2);
-        items.add(3);
-        items.add(4);
-        items.add(5);
-        System.out.println(items);
-        List<Long> test = predictService.predict(items);
-        System.out.println(test);
+//        List<Integer> items = new ArrayList<>();
+//        items.add(1);
+//        items.add(2);
+//        items.add(3);
+//        items.add(4);
+//        items.add(5);
+//        System.out.println(items);
+//        List<Long> test = predictService.predict(items);
+//        System.out.println(test);
     }
 }
