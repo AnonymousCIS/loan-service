@@ -1,6 +1,7 @@
 package org.anonymous.loan.controllers;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.anonymous.loan.constants.BankName;
 import org.anonymous.loan.constants.Category;
@@ -15,24 +16,23 @@ public class RequestLoan {
     @NotBlank
     private String loanName;
 
-    @NotBlank
+    @NotNull
     private Long limit;
 
-    @NotBlank
+    @NotNull
     private Category category;
 
-    @NotBlank
+    @NotNull
     private BankName bankName;
 
-    @NotBlank
+    @NotNull
     private Long repaymentYear;
 
     @NotBlank
     private String loanDescription;
 
-    @NotBlank
+    @NotNull
     private Double interestRate;
 
-    @NotBlank
     private boolean isOpen;
 }
