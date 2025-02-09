@@ -1,4 +1,4 @@
-FROM yonggyo00/ubuntu
+FROM kks940104/ubuntu:loan
 ARG JAR_FILE=build/libs/loanservice-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
 
