@@ -58,5 +58,4 @@ public class Loan extends BaseEntity {
     private Long item4_interestRate; // 이자율 특성4
 
     private Long item5_repaymentDate; // 상환날짜 특성5
-
 }

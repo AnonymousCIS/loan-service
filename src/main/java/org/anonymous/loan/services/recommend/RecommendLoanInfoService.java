@@ -171,7 +171,7 @@ public class RecommendLoanInfoService {
         /* 검색 처리 E */
 
         JPAQuery<RecommendLoan> query = queryFactory.selectFrom(recommendLoan)
-                .leftJoin(recommendLoan.loan, loan)
+                .leftJoin(recommendLoan.loan)
                 .fetchJoin()
                 .where(andBuilder)
                 .offset(offset)
