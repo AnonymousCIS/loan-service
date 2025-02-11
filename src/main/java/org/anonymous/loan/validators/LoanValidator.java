@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import java.util.List;
-
 @Lazy
 @Component
 @RequiredArgsConstructor
@@ -28,29 +26,25 @@ public class LoanValidator implements Validator {
 
         if (errors.hasErrors()) return;
 
-        List<RequestLoan> requestLoans = (List<RequestLoan>) target;
+        RequestLoan requestLoan = (RequestLoan) target;
 
-        for (RequestLoan requestLoan : requestLoans) {
+        String loanName = requestLoan.getLoanName();
+        Long limit = requestLoan.getLimit();
+        Long repaymentYear = requestLoan.getRepaymentYear();
 
-            String loanName = requestLoan.getLoanName();
-            Long limit = requestLoan.getLimit();
-            Long repaymentYear = requestLoan.getRepaymentYear();
+        if (repository.exists(loanName)) {
 
-            if (repository.exists(loanName)) {
+            errors.rejectValue("loanName", "Exists");
+        }
 
-                errors.rejectValue("loanName", "Exists");
-            }
+        if (limit <= 0L) {
 
-            if (limit <= 0L) {
+            errors.rejectValue("limit", "Duplicated");
+        }
 
-                errors.rejectValue("limit", "Duplicated");
-            }
+        if (repaymentYear <= 0L) {
 
-            if (repaymentYear <= 0L) {
-
-                errors.rejectValue("repaymentYear", "Duplicated");
-            }
-
+            errors.rejectValue("repaymentYear", "Duplicated");
         }
     }
 }
