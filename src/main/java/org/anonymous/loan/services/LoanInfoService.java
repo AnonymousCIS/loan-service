@@ -131,6 +131,16 @@ public class LoanInfoService {
             andBuilder.and(loan.category.in(categories));
         }
 
+        // 카드 한도로 검색
+
+        int loanLimitMax = search.getLoanLimitMax();
+        int loanLimitMin = search.getLoanLimitMin();
+
+        loanLimitMax = loanLimitMax < 1 ? 1000000000 : loanLimitMax;
+        loanLimitMin = loanLimitMin < 1 ? 100000 : loanLimitMin;
+
+        andBuilder.and(loan.limit.between(loanLimitMin, loanLimitMax));
+
         if (!memberUtil.isAdmin()) andBuilder.and(loan.isOpen);
 
         /**
