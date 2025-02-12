@@ -1,5 +1,6 @@
 package org.anonymous.loan.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.anonymous.global.entities.BaseEntity;
@@ -12,6 +13,7 @@ import org.anonymous.loan.constants.Category;
  */
 @Data
 @Entity
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Loan extends BaseEntity {
 
     @Id
