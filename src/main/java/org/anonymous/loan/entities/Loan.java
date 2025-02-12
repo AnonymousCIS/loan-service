@@ -58,4 +58,12 @@ public class Loan extends BaseEntity {
     private Long item4_interestRate; // 이자율 특성4
 
     private Long item5_repaymentDate; // 상환날짜 특성5
+
+    public String getBankNameStr() {
+        return bankName == null ? "" : bankName.getTitle();
+    }
+
+    public String getCategoryStr() {
+        return category == null ? "" : category.getTitle();
+    }
 }
