@@ -17,4 +17,7 @@ public class LoanSearch extends CommonSearch {
     private List<BankName> bankName;
 
     private List<Category> categories;
+
+    private int loanLimitMax = 0;
+    private int loanLimitMin = 0;
 }
