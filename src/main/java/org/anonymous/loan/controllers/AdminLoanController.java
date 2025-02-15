@@ -16,9 +16,11 @@ import org.anonymous.loan.entities.RecommendLoan;
 import org.anonymous.loan.entities.UserLoan;
 import org.anonymous.loan.services.LoanDeleteService;
 import org.anonymous.loan.services.LoanUpdateService;
+import org.anonymous.loan.services.TrainService;
 import org.anonymous.loan.services.recommend.RecommendLoanDeleteService;
 import org.anonymous.loan.services.userLoan.UserLoanDeleteService;
 import org.anonymous.loan.validators.LoanValidator;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +44,8 @@ public class AdminLoanController {
     private final UserLoanDeleteService userLoanDeleteService;
 
     private final RecommendLoanDeleteService recommendDeleteService;
+
+    private final TrainService trainService;
 
     /**
      * 추천 대출 로그 단일 | 목록 일괄 삭제 처리
@@ -210,5 +214,18 @@ public class AdminLoanController {
         List<UserLoan> data = userLoanDeleteService.deletes(seqs);
 
         return new JSONData(data);
+    }
+
+    /**
+     * 대출 Train
+     *
+     * @return
+     */
+    @Operation(summary = "학습", description = "대출 DB 머신러닝 학습", method = "GET")
+    @ApiResponse(responseCode = "200")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/train")
+    public String train() {
+        return trainService.train();
     }
 }
