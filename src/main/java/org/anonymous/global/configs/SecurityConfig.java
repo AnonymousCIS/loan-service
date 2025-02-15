@@ -68,7 +68,9 @@ public class SecurityConfig {
                    c.requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                            .requestMatchers("/apidocs.html",
                                    "/swagger-ui/**",
-                                   "/api-docs/**").permitAll()
+                                   "/api-docs/**","/view/**",
+                                   "/list",
+                                   "/train/**").permitAll()
                            // 나머지는 아무 인증, 로그인만 접근 가능
                            .anyRequest().authenticated();
                 });
