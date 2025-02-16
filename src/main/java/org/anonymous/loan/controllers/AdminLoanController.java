@@ -173,9 +173,9 @@ public class AdminLoanController {
     @PatchMapping("/updates")
     public JSONData update(@RequestBody @Valid List<RequestLoan> forms, Errors errors) {
 
-        validator.validate(forms, errors);
-
-        if (errors.hasErrors()) throw new BadRequestException(utils.getErrorMessages(errors));
+//        validator.validate(forms, errors);
+//
+//        if (errors.hasErrors()) throw new BadRequestException(utils.getErrorMessages(errors));
 
         List<Loan> data = loanUpdateService.process(forms);
 

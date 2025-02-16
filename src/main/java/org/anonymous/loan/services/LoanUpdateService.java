@@ -95,7 +95,7 @@ public class LoanUpdateService {
 
         /* 신규 대출 등록 & 수정 공통 반영 사항 S */
 
-        data.setLoanName(form.getLoanName());
+        // data.setLoanName(form.getLoanName());
         data.setCategory(form.getCategory());
         data.setLimit(form.getLimit());
         data.setInterestRate(form.getInterestRate());
