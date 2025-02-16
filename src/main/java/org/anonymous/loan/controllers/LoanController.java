@@ -264,7 +264,7 @@ public class LoanController {
     @ApiResponse(responseCode = "200")
     @Parameter(name="seq", description = "대출 번호")
     @PostMapping("/user/create")
-    public JSONData createUserLoan(List<Long> seqs) {
+    public JSONData createUserLoan(@RequestBody List<Long> seqs) {
 
         List<UserLoan> data = userLoanUpdateService.process(seqs);
 
