@@ -6,9 +6,14 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.global.paging.CommonSearch;
+import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.loan.entities.Loan;
+import org.anonymous.loan.entities.TrainLog;
+import org.anonymous.loan.exceptions.TrainLogNotFoundException;
 import org.anonymous.loan.services.PredictService;
+import org.anonymous.loan.services.TrainLogInfoService;
 import org.anonymous.loan.services.TrainService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +32,7 @@ public class TrainController {
 
     private final TrainService trainService;
     private final PredictService predictService;
+    private final TrainLogInfoService trainLogInfoService;
 
     @Operation(summary = "train 조회", method="GET", description = "train DB 조회")
     @ApiResponse(responseCode = "200")
@@ -55,4 +61,50 @@ public class TrainController {
         List<Loan> loans = predictService.predict(items);
         return new JSONData(loans);
     }
+
+    @Operation(summary = "학습 로그 검색", method="GET", description = "학습한 기록을 검색한다.")
+    @ApiResponse(responseCode = "200")
+    @Parameter(name="seq", description = "검색번호")
+    @GetMapping
+    public JSONData logGet(@RequestParam("seq") Long seq) {
+        TrainLog trainLog = trainLogInfoService.get(seq);
+        if (trainLog == null) {
+            throw new TrainLogNotFoundException();
+        }
+
+        return new JSONData(trainLog);
+    }
+
+    @Operation(summary = "학습 로그 검색", method="GET", description = "학습한 기록을 검색하며, List로 반환해준다.")
+    @ApiResponse(responseCode = "200")
+    @GetMapping
+    public JSONData logGetList(CommonSearch search) {
+        ListData<TrainLog> trainLog = trainLogInfoService.getList(search);
+        if (trainLog == null) {
+            throw new TrainLogNotFoundException();
+        }
+
+        return new JSONData(trainLog);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
