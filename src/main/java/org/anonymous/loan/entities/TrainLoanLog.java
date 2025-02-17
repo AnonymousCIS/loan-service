@@ -8,7 +8,7 @@ import org.anonymous.global.entities.BaseMemberEntity;
 
 @Data
 @Entity
-public class TrainLog extends BaseMemberEntity {
+public class TrainLoanLog extends BaseMemberEntity {
 
     @Id @GeneratedValue
     private Long seq;

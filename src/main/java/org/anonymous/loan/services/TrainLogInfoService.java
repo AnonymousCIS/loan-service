@@ -9,7 +9,7 @@ import org.anonymous.global.paging.CommonSearch;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.paging.Pagination;
 import org.anonymous.loan.entities.QTrainLog;
-import org.anonymous.loan.entities.TrainLog;
+import org.anonymous.loan.entities.TrainLoanLog;
 import org.anonymous.loan.exceptions.TrainLogNotFoundException;
 import org.anonymous.loan.repositories.TrainLogRepository;
 import org.springframework.context.annotation.Lazy;
@@ -28,24 +28,24 @@ public class TrainLogInfoService {
     private final JPAQueryFactory queryFactory;
     private final Utils utils;
 
-    public TrainLog get(Long seq) {
+    public TrainLoanLog get(Long seq) {
         return trainLogRepository.findById(seq).orElseThrow(TrainLogNotFoundException::new);
     }
 
-    public List<TrainLog> getList(List<Long> seqs) {
-        List<TrainLog> trainLogs = new ArrayList<>();
+    public List<TrainLoanLog> getList(List<Long> seqs) {
+        List<TrainLoanLog> trainLoanLogs = new ArrayList<>();
 
         for (Long seq : seqs) {
-            TrainLog log = get(seq);
+            TrainLoanLog log = get(seq);
 
             if (log != null) {
-                trainLogs.add(log);
+                trainLoanLogs.add(log);
             }
         }
 
-        return trainLogs;
+        return trainLoanLogs;
     }
-    public ListData<TrainLog> getList(CommonSearch search) {
+    public ListData<TrainLoanLog> getList(CommonSearch search) {
 
         int page = Math.max(search.getPage(), 1);
 
@@ -57,12 +57,12 @@ public class TrainLogInfoService {
 
         QTrainLog trainLog = QTrainLog.trainLog;
 
-        JPAQuery<TrainLog> query = queryFactory.selectFrom(trainLog)
+        JPAQuery<TrainLoanLog> query = queryFactory.selectFrom(trainLog)
                 .offset(offset)
                 .limit(limit);
 
         query.orderBy(trainLog.createdAt.desc());
-        List<TrainLog> items = query.fetch();
+        List<TrainLoanLog> items = query.fetch();
         long total = trainLogRepository.count();
         int ranges = utils.isMobile() ? 5 : 10;
         Pagination pagination = new Pagination(page, (int)total, ranges, limit, request);
