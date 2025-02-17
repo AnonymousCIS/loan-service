@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.List;
+
 @Lazy
 @Component
 @RequiredArgsConstructor
@@ -45,6 +47,16 @@ public class LoanValidator implements Validator {
         if (repaymentYear <= 0L) {
 
             errors.rejectValue("repaymentYear", "Duplicated");
+        }
+    }
+
+    public void validates(List<RequestLoan> target, Errors errors) {
+        if (errors.hasErrors()) return;
+
+        if (!target.isEmpty()) {
+            for (RequestLoan loan : target) {
+                validate(loan, errors);
+            }
         }
     }
 }
