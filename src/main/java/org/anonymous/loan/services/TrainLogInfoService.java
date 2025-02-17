@@ -8,7 +8,7 @@ import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.CommonSearch;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.paging.Pagination;
-import org.anonymous.loan.entities.QTrainLog;
+import org.anonymous.loan.entities.QTrainLoanLog;
 import org.anonymous.loan.entities.TrainLoanLog;
 import org.anonymous.loan.exceptions.TrainLogNotFoundException;
 import org.anonymous.loan.repositories.TrainLogRepository;
@@ -55,13 +55,13 @@ public class TrainLogInfoService {
 
         int offset = (page - 1) * limit;
 
-        QTrainLog trainLog = QTrainLog.trainLog;
+        QTrainLoanLog trainLoanLog = QTrainLoanLog.trainLoanLog;
 
-        JPAQuery<TrainLoanLog> query = queryFactory.selectFrom(trainLog)
+        JPAQuery<TrainLoanLog> query = queryFactory.selectFrom(trainLoanLog)
                 .offset(offset)
                 .limit(limit);
 
-        query.orderBy(trainLog.createdAt.desc());
+        query.orderBy(trainLoanLog.createdAt.desc());
         List<TrainLoanLog> items = query.fetch();
         long total = trainLogRepository.count();
         int ranges = utils.isMobile() ? 5 : 10;
