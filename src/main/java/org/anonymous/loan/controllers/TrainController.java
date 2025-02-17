@@ -10,7 +10,7 @@ import org.anonymous.global.paging.CommonSearch;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.loan.entities.Loan;
-import org.anonymous.loan.entities.TrainLog;
+import org.anonymous.loan.entities.TrainLoanLog;
 import org.anonymous.loan.exceptions.TrainLogNotFoundException;
 import org.anonymous.loan.services.PredictService;
 import org.anonymous.loan.services.TrainLogInfoService;
@@ -64,19 +64,19 @@ public class TrainController {
     @Parameter(name="seq", description = "검색번호")
     @GetMapping("/train/log")
     public JSONData logGet(@RequestParam("seq") Long seq) {
-        TrainLog trainLog = trainLogInfoService.get(seq);
-        if (trainLog == null) {
+        TrainLoanLog trainLoanLog = trainLogInfoService.get(seq);
+        if (trainLoanLog == null) {
             throw new TrainLogNotFoundException();
         }
 
-        return new JSONData(trainLog);
+        return new JSONData(trainLoanLog);
     }
 
     @Operation(summary = "학습 로그 검색", method="GET", description = "학습한 기록을 검색하며, List로 반환해준다.")
     @ApiResponse(responseCode = "200")
     @GetMapping("/train/logs")
     public JSONData logGetList(@ModelAttribute CommonSearch search) {
-        ListData<TrainLog> trainLog = trainLogInfoService.getList(search);
+        ListData<TrainLoanLog> trainLog = trainLogInfoService.getList(search);
         if (trainLog == null) {
             throw new TrainLogNotFoundException();
         }
