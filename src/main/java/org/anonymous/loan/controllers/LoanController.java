@@ -18,6 +18,8 @@ import org.anonymous.loan.services.recommend.RecommendLoanInfoService;
 import org.anonymous.loan.services.userLoan.UserLoanDeleteService;
 import org.anonymous.loan.services.userLoan.UserLoanInfoService;
 import org.anonymous.loan.services.userLoan.UserLoanUpdateService;
+import org.anonymous.member.MemberUtil;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +32,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class LoanController {
-
+    private final MemberUtil memberUtil;
     private final Utils utils;
 
     private final LoanInfoService loanInfoService;
@@ -108,7 +110,15 @@ public class LoanController {
     @GetMapping("/recommend/list")
     public JSONData recommendList(@ModelAttribute RecommendLoanSearch search) {
 
-        ListData<RecommendLoan> data = recommendInfoService.getList(search);
+        ListData<RecommendLoan> data = new ListData<>();
+        String mode = search.getMode();
+        if (StringUtils.hasText(mode) && mode.equals("USER")) {
+            data = recommendInfoService.getMyList(search);
+        } else if (StringUtils.hasText(mode) && mode.equals("ADMIN") && memberUtil.isAdmin()) {
+            data = recommendInfoService.getList(search);
+        } else if (memberUtil.isAdmin()){
+            data = recommendInfoService.getList(search);
+        }
 
         return new JSONData(data);
     }
@@ -249,7 +259,15 @@ public class LoanController {
     @GetMapping("/user/list")
     public JSONData userList(@ModelAttribute RecommendLoanSearch search) {
 
-        ListData<UserLoan> data = userLoanInfoService.getList(search);
+        ListData<UserLoan> data = new ListData<>();
+        String mode = search.getMode();
+        if (StringUtils.hasText(mode) && mode.equals("USER")) {
+            data = userLoanInfoService.getMyList(search);
+        } else if (StringUtils.hasText(mode) && mode.equals("ADMIN") && memberUtil.isAdmin()) {
+            data = userLoanInfoService.getList(search);
+        } else if (memberUtil.isAdmin()){
+            data = userLoanInfoService.getList(search);
+        }
 
         return new JSONData(data);
     }
