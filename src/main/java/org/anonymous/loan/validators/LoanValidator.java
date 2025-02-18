@@ -5,6 +5,7 @@ import org.anonymous.loan.controllers.RequestLoan;
 import org.anonymous.loan.repositories.LoanRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -33,10 +34,14 @@ public class LoanValidator implements Validator {
         String loanName = requestLoan.getLoanName();
         Long limit = requestLoan.getLimit();
         Long repaymentYear = requestLoan.getRepaymentYear();
+        String mode = requestLoan.getMode();
 
-        if (repository.exists(loanName)) {
 
-            errors.rejectValue("loanName", "Exists");
+        if (StringUtils.hasText(mode) && !mode.equals("edit")) {
+            if (repository.exists(loanName)) {
+
+                errors.rejectValue("loanName", "Exists");
+            }
         }
 
         if (limit <= 0L) {
