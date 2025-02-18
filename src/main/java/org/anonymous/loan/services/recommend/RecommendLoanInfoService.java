@@ -1,6 +1,7 @@
 package org.anonymous.loan.services.recommend;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.StringExpression;
@@ -61,7 +62,8 @@ public class RecommendLoanInfoService {
         ResponseEntity<JSONData> responseEntity = utils.returnData();
 
         try {
-            String email = om.writeValueAsString(Objects.requireNonNull(responseEntity.getBody()).getData());
+            JsonNode root = om.readTree(om.writeValueAsString(Objects.requireNonNull(responseEntity.getBody()).getData()));
+            String email = root.get("email").asText();
 
             if (!email.equals(item.getEmail())) {
                 throw new LoanNotFoundException();
