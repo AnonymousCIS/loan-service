@@ -1,6 +1,7 @@
 package org.anonymous.loan.services.userLoan;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.StringExpression;
@@ -17,6 +18,9 @@ import org.anonymous.loan.constants.BankName;
 import org.anonymous.loan.constants.Category;
 import org.anonymous.loan.controllers.RecommendLoanSearch;
 import org.anonymous.loan.entities.*;
+import org.anonymous.loan.entities.QLoan;
+import org.anonymous.loan.entities.QRecommendLoan;
+import org.anonymous.loan.entities.QUserLoan;
 import org.anonymous.loan.exceptions.LoanNotFoundException;
 import org.anonymous.loan.exceptions.RecommendLoanNotFoundException;
 import org.anonymous.loan.exceptions.UserLoanNotFoundException;
@@ -61,7 +65,8 @@ public class UserLoanInfoService {
         ResponseEntity<JSONData> responseEntity = utils.returnData();
 
         try {
-            String email = om.writeValueAsString(Objects.requireNonNull(responseEntity.getBody()).getData());
+            JsonNode root = om.readTree(om.writeValueAsString(Objects.requireNonNull(responseEntity.getBody()).getData()));
+            String email = root.get("email").asText();
 
             if (!email.equals(item.getEmail())) {
                 throw new LoanNotFoundException();
