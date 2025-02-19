@@ -40,7 +40,7 @@ public class PredictService {
         try {
             String data = om.writeValueAsString(items);
 
-            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "/predict_KNeightbors.py", data);
+            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "/predict_KNeighbors.py", data);
             Process process = builder.start();
 
             int exitCode = process.waitFor();
