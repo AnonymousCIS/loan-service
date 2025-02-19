@@ -100,10 +100,6 @@ public class UserLoanInfoService {
 
         QUserLoan userLoan = QUserLoan.userLoan;
 
-        QRecommendLoan recommendLoan = QRecommendLoan.recommendLoan;
-
-        QLoan loan = QLoan.loan;
-
         // 대출 이름별 검색
         List<String> loanNames = search.getLoanName();
 
@@ -172,7 +168,7 @@ public class UserLoanInfoService {
         /* 검색 처리 E */
 
         JPAQuery<UserLoan> query = queryFactory.selectFrom(userLoan)
-                .leftJoin(recommendLoan.loan)
+                .leftJoin(userLoan.loan)
                 .fetchJoin()
                 .where(andBuilder)
                 .offset(offset)
